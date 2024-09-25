@@ -9,70 +9,20 @@ import useUserStore from './store/modules/user';
 
 // 隐藏进度条右上角的转圈图标
 NProgress.configure({ showSpinner: false })
-// router.beforeEach(async(to, from, next) => {
-//   NProgress.start()
-//   const userStore = useUserStore()
-//   if(userStore.token){
-//     // 若有token
-//     // 不能访问login
-//     // 登录成功，访问login时指向首页
-//     if(to.path == '/login'){
-//       next({path:'/'})
-//     }else{
-//       // 保证有用户信息才可访问其余路由
-//       if(userStore.username){
-//         // 有用户信息
-//         next()
-//       }else{
-//         // 若无用户信息
-//         try {
-//           // 获取用户信息
-//           await userStore.update()
-//           next({...to}) 
-//         } catch (error) {
-//           // token过期，或用户手动修改了本地存储的token
-//           // 1.退出登录 调用userLogout函数
-//           await userStore.clearusername()
-//           // 2.跳转到登录页面重新登录
-//           next({path:'/login',query:{redirect:to.path}}) 
-//         }      
-//       }
-//     }
-//   }else{
-//     // 无token，指向login
-//     // 用户未登录判断
-//     if(to.path=='/login'){
-//       // 若访问的是登录界面，则放行
-//       next();
-//     }else{
-//       // 否则，指向登录页面，携带参数
-//       next({path:'/login',query:{redirect:to.path}})
-//     }
-//   }
-  
-//   next();
-// });
-// router.afterEach(()=>{
-//   NProgress.done()
-// })
-
-
 
 router.beforeEach(async(to, from, next) => {
   NProgress.start()
   const userStore = useUserStore()
-  console.log('@@',userStore);
-  
   // userStore.getUserInfo()
   // 若有token,不能访问login,没有参数就访问home
   if(userStore.token){
     if(to.path=='/login'){
-      next({path:'/'})
+      next({path:'/',query:{redirect:to.path}})
     }
     else{     
       // 若访问的不是login,而是其他路由 
       let result:any =await userStore.getUserInfo()
-      console.log('333',result);
+    
       // 确保有用户信息
       if(result.userName){
         next()
@@ -110,4 +60,6 @@ router.beforeEach(async(to, from, next) => {
 router.afterEach(()=>{
   NProgress.done()
 })
+
+
 

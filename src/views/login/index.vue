@@ -74,6 +74,7 @@ let rules: any = {
 // 然后继续执行方法的剩余部分。
 // 释放线程：在等待异步操作完成时，await 会释放当前线程，使其可以执行其他任务，
 // 从而提高应用程序的并发性能。
+
 const login = async () => {
     // 表单校验通过才发请求
     // validate	任一表单项被校验后触发 是ElementPlus里Form表单里的FormAPI事件
@@ -83,29 +84,16 @@ const login = async () => {
     // 发请求,调用api接口
     // 向服务器发请求,判断该用户是否存在,若存在,返回token
 
-    const result = (await reqLogin(loginForm)) as any
-    console.log('11',result);
+    const result = await userStore.userLogin(loginForm) 
     if (result.code === 200 && result.status === 1) {
         // 若是登录成功,本地存储token
         localStorage.setItem('TOKEN', result.token)
         // localStorage.setItem('userInfo', result.userInfo)
-        await reqChangeState(result.token, true)
-        await userStore.getUserInfo()
-        
+        // await reqChangeState(result.token, true)
+        // await userStore.getUserInfo()        
         // 编程式导航跳转到首页或query参数
-        // let redirect: any = $route.query.redirect
-        // $router.push({ path: redirect || '/' })
-
-        // 若有携带的参数
-        if ($route.query.redirct) {
-            // 则重定向到该组件
-            $router.push(($route.query.redirct as string))
-        } else {
-            // 否则进入首页
-            $router.push('/')
-            
-        }
-        
+        let redirect: any = $route.query.redirect
+        $router.push({ path: redirect || '/' })
 
         // 登录成功的提示信息,用了elementui的notifiction通知框
         // 需引入ElNotification
@@ -122,9 +110,38 @@ const login = async () => {
             message: result.message
         })
     }
-
 }
 
+
+// const login = async () => {
+//     await loginForms.value.validate()
+//     loading.value = true
+//     try {
+//         const result = await userStore.userLogin(loginForm)
+
+//         // // 若登录成功，则本地存储token，放在请求头拦截器，以后每次请求都携带token
+//         // localStorage.setItem('TOKEN',result.token)
+
+//         // 路由跳转
+//         let redirect: any = $route.query.redirct
+//         $router.push({ path: redirect || '/' })
+
+//         // 登录成功的消息提示框
+//         ElNotification({
+//             type: 'success',
+//             message: '欢迎回来',
+//             title: `Hi,${getTime()}好`
+//         })
+//         // 加载样式消失
+//         loading.value = false
+
+//     } catch (error) {
+//         ElNotification({
+//             type: 'error',
+//             message: (error as Error).message
+//         })
+//     }
+// }
 
 </script>
 
