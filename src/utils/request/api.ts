@@ -35,7 +35,7 @@ export function reqUploadBrandName(brandId: string, brandName: string,) {
         }
     })
 }
-//  添加或编辑品牌数据请求
+//  删除品牌数据请求
 export function reqDelBrandData(brandId: string) {
     return service({
         url: '/delBrandData',
