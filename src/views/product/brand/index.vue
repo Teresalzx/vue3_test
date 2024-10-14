@@ -18,9 +18,13 @@
                     <el-tooltip effect="dark" content="编辑" placement="bottom-end">
                         <el-button type="warning" icon="Edit" @click="editBrand($index,row)"></el-button>
                     </el-tooltip>
-                    <el-tooltip effect="dark" content="删除" placement="bottom-end">
-                        <el-button type="danger" icon="Delete" @click=""></el-button>
-                    </el-tooltip>
+                    
+                    <el-popconfirm :title="`您确定要删除${row.brandName}品牌吗?`" @confirm="delBrand(row)">
+                        <template #reference>
+                                <el-button type="danger" icon="Delete" ></el-button>
+                        </template>
+                    </el-popconfirm>     
+                    
                 </template>
             </el-table-column>
         </el-table>
@@ -72,7 +76,7 @@
 
 <script setup lang='ts' name="Brand">
 import { onMounted, reactive, ref } from 'vue'
-import { reqGetBrandData, reqUploadBrandName } from '@/utils/request/api'
+import { reqDelBrandData, reqGetBrandData, reqUploadBrandName } from '@/utils/request/api'
 import { ElMessage } from 'element-plus';
 import type { UploadFile, UploadFiles, UploadInstance, UploadProps } from 'element-plus' //Ts类型
 
@@ -106,16 +110,28 @@ let ruleForm = reactive({
     brandId: '',
     sortID: ''
 })
+// 自定义品牌名称规则
+let checkbrandName = (rule: any, value: any, callback: any) => {
+    // rule:校验规则对象
+    // value：表单元素文本内容
+    // callback:函数，符合则放行通过，不符合则注入错误提示信息
+    if (!value.trim()) {
+        callback(new Error('品牌名称不能为空！'))
+    }  else {
+        callback()
+    }
+}
 
 // 规则
 const rules = reactive<FormRules<typeof ruleForm>>({
     brandName: [
-        { required: true, message: '品牌名称不能为空', trigger: 'blur', },
+        { required: true,  trigger: 'change', validator:checkbrandName},
     ],
     brandLogo: [
         { required: true, message: '品牌Logo不能为空', trigger: 'blur', },
     ]
 })
+
 
 // 弹窗×事件
 const handleClose = ()=>{
@@ -171,6 +187,7 @@ const confirm = async (formEl:FormInstance | undefined) => {
 // 添加品牌回调
 const addBrand = () => {
     dialogFormVisible.value = true //对话框显示
+    ruleFormRef.value?.resetFields()
     title.value ='添加品牌'
     // 清空收集数据
     // 要获取表单数据    
@@ -181,7 +198,7 @@ const addBrand = () => {
 }
 
 // 编辑品牌回调
-const editBrand =async (index:number,data:any) => {
+const editBrand = (index:number,data:any) => {
     dialogFormVisible.value = true  //获取弹窗
     title.value = '编辑品牌'
     // 要得到此品牌的数据
@@ -192,6 +209,23 @@ const editBrand =async (index:number,data:any) => {
     }
     
 }
+
+// 删除框确认按钮
+const delBrand = async(data:any)=>{
+    // console.log(index,data);
+    const result = await reqDelBrandData(data.brandId)
+    // console.log(result);
+    if(result.code==200&& result.status==1){
+        getTableData()
+        ElMessage.closeAll()
+        ElMessage({
+            type:'success',
+            message:'删除成功'
+        })
+    }
+}
+    
+
 
 // 图片选择改变事件
 

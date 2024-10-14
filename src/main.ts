@@ -14,6 +14,7 @@ import pinia from './store/index'
 
 import NProgress from 'nprogress' 
 import 'nprogress/nprogress.css' 
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 // 引入路由鉴权
 import  './permission.ts'

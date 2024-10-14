@@ -81,7 +81,7 @@
     .scrollbar{
       width: 300px;
       height: calc(100vh - $base-slider-logo-height);
-      background-color:$base-slider-bgcolor;
+      // background-color:$base-slider-bgcolor;
       position: fixed;
     }
     &.fold{
@@ -95,7 +95,7 @@
     padding:20px;
     transition: all .3s;
     // overflow-y: scroll;
-    background-color:skyblue;
+    // background-color:skyblue;
     &.fold{
       width:calc(100vw - $base-menu-min-width - 15px);
       transform: translateX(calc(-300px + $base-menu-min-width + 14px));
@@ -105,7 +105,7 @@
     width:calc(100vw - 300px) ;
     height:75px;
     transition: all 0.3s;
-    background-color: pink;
+    // background-color: white;
     
     
     &.fold{

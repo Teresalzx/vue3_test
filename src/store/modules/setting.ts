@@ -4,7 +4,8 @@ let useSettingStore = defineStore('settingFold',{
   state:()=>{
     return {
       fold: false,
-      refresh:false //用于控制刷新
+      refresh:false ,//用于控制刷新
+      dark:false
     }
   }
 })
